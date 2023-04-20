@@ -17,7 +17,7 @@ public class ResponseResult<T>{
      * @param <T>
      */
     public static <T> ResponseResult success(){
-        return new ResponseResult().setCode(CommonStatusEnum.SUCCESS.getCode()).setData(CommonStatusEnum.SUCCESS.getValue());
+        return new ResponseResult().setCode(CommonStatusEnum.SUCCESS.getCode()).setMessage(CommonStatusEnum.SUCCESS.getValue());
     }
 
     /**

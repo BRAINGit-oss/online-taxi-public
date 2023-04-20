@@ -1,4 +1,4 @@
-package com.brain.servicepassengeruser.apipassenger.request;
+package com.brain.servicepassengeruser.internalcommon.request;
 
 import lombok.Data;
 

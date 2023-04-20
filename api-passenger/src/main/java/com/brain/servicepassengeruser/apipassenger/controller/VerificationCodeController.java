@@ -1,6 +1,6 @@
 package com.brain.servicepassengeruser.apipassenger.controller;
 
-import com.brain.servicepassengeruser.apipassenger.request.VerificationCodeDTO;
+import com.brain.servicepassengeruser.internalcommon.request.VerificationCodeDTO;
 import com.brain.servicepassengeruser.apipassenger.service.VerificationCodeService;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;

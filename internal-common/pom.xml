@@ -6,10 +6,10 @@
         <groupId>org.example</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.braininternalcommon</groupId>
+<!--    <groupId>com.braininternalcommon</groupId>-->
     <artifactId>internal-common</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+<!--    <version>1.0-SNAPSHOT</version>-->
+<!--    <packaging>jar</packaging>-->
 
     <name>internal-common</name>
     <url>http://maven.apache.org</url>
