@@ -1,8 +1,10 @@
 package com.brain.servicepassengeruser.apipassenger.service;
 
+import com.brain.servicepassengeruser.apipassenger.remote.ServicePassengerUsersClient;
 import com.brain.servicepassengeruser.apipassenger.remote.ServiceVerificationcodeClient;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.VerificationCodeDTO;
 import com.brain.servicepassengeruser.internalcommon.response.NumberCodeResponse;
 import com.brain.servicepassengeruser.internalcommon.response.TokenResponse;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 public class VerificationCodeService {
     @Autowired
     private ServiceVerificationcodeClient serviceVerificationcodeClient;
+
+    @Autowired
+    private ServicePassengerUsersClient servicePassengerUsersClient;
 
     //乘客验证码的前缀
     private String verificationCodePrefix = "passenger-verification-code-";
@@ -76,7 +81,10 @@ public class VerificationCodeService {
         }
 
         //判断是否有用户，并进行对应的处理
-        System.out.println("判断是否有用户，并进行对应的处理");
+//        System.out.println("判断是否有用户，并进行对应的处理");
+        VerificationCodeDTO verificationCodeDTO = new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        servicePassengerUsersClient.getNumberCode(verificationCodeDTO);
 
         //颁发令牌
         System.out.println("颁发令牌");
