@@ -41,8 +41,8 @@ public class JwtUtils {
                     builder.withClaim(k,v);
             }
         );
-        //整合过期时间
-        builder.withExpiresAt(date);
+        //整合过期时间 过期时间由redis设置
+//        builder.withExpiresAt(date);
 
         //生成token
         String sign = builder.sign(Algorithm.HMAC256(SIGN));

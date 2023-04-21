@@ -22,7 +22,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         boolean result = true;
         String resultString = "";
 
-        String token = request.getHeader("Autorization");
+        String token = request.getHeader("Authorization");
         try{
             JwtUtils.parseToken(token);
         }catch (SignatureVerificationException e){
@@ -41,7 +41,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         if(!result){
             PrintWriter out = response.getWriter();
-            out.print(JSONObject.fromObject(ResponseResult.fail(resultString).toString()));
+            out.print(JSONObject.fromObject(ResponseResult.fail(resultString)).toString());
         }
 
         return result;
