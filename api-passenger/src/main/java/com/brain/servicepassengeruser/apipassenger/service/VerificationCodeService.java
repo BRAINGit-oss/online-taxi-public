@@ -3,6 +3,7 @@ package com.brain.servicepassengeruser.apipassenger.service;
 import com.brain.servicepassengeruser.apipassenger.remote.ServicePassengerUsersClient;
 import com.brain.servicepassengeruser.apipassenger.remote.ServiceVerificationcodeClient;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
+import com.brain.servicepassengeruser.internalcommon.constant.IdentityConstant;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.VerificationCodeDTO;
 import com.brain.servicepassengeruser.internalcommon.response.NumberCodeResponse;
@@ -12,7 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.brain.servicepassengeruser.internalcommon.util.JwtUtils;
+
 
 @Service
 public class VerificationCodeService {
@@ -86,13 +92,15 @@ public class VerificationCodeService {
         verificationCodeDTO.setPassengerPhone(passengerPhone);
         servicePassengerUsersClient.getNumberCode(verificationCodeDTO);
 
-        //颁发令牌
+        //颁发令牌 JWT Json Web Token 且可以验证令牌是否被修改过 如何验证？服务端颁发的token 可验证是否是服务端的颁发的
         System.out.println("颁发令牌");
+        String s = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
 
         //响应
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setToken("token value");
         return ResponseResult.success(tokenResponse);
     }
+
 
 }
