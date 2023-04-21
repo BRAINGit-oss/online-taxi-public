@@ -3,7 +3,8 @@ package com.brain.servicepassengeruser.apipassenger.service;
 import com.brain.servicepassengeruser.apipassenger.remote.ServicePassengerUsersClient;
 import com.brain.servicepassengeruser.apipassenger.remote.ServiceVerificationcodeClient;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
-import com.brain.servicepassengeruser.internalcommon.constant.IdentityConstant;
+import com.brain.servicepassengeruser.internalcommon.constant.IdentityConstants;
+import com.brain.servicepassengeruser.internalcommon.constant.TokenTypeConstants;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.VerificationCodeDTO;
 import com.brain.servicepassengeruser.internalcommon.response.NumberCodeResponse;
@@ -14,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.brain.servicepassengeruser.internalcommon.util.JwtUtils;
@@ -93,14 +92,20 @@ public class VerificationCodeService {
 
         //颁发令牌 JWT Json Web Token 且可以验证令牌是否被修改过 如何验证？服务端颁发的token 可验证是否是服务端的颁发的
 //        System.out.println("颁发令牌");
-        String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        String accessToken = JwtUtils.generatorToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenTypeConstants.ACCESS_TOKEN_TYPE);
         //将token存到redis中
-        String key1 = RedisPrefixUtils.generatorTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
-        stringRedisTemplate.opsForValue().set(key1,token,30,TimeUnit.DAYS);
+        String key1 = RedisPrefixUtils.generatorTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY,TokenTypeConstants.ACCESS_TOKEN_TYPE);
+        stringRedisTemplate.opsForValue().set(key1,accessToken,30,TimeUnit.DAYS);
+
+        String refreshToken = JwtUtils.generatorToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenTypeConstants.REFRESH_TOKEN_TYPE);
+        //将token存到redis中
+        String key2 = RedisPrefixUtils.generatorTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY,TokenTypeConstants.REFRESH_TOKEN_TYPE);
+        stringRedisTemplate.opsForValue().set(key2,refreshToken,31,TimeUnit.DAYS);
 
         //响应
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken(token);
+        tokenResponse.setAccessToken(accessToken);
+        tokenResponse.setRefreshToken(refreshToken);
         return ResponseResult.success(tokenResponse);
     }
 
