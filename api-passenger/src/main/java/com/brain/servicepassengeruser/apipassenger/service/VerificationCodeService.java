@@ -93,12 +93,12 @@ public class VerificationCodeService {
         servicePassengerUsersClient.getNumberCode(verificationCodeDTO);
 
         //颁发令牌 JWT Json Web Token 且可以验证令牌是否被修改过 如何验证？服务端颁发的token 可验证是否是服务端的颁发的
-        System.out.println("颁发令牌");
-        String s = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+//        System.out.println("颁发令牌");
+        String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
 
         //响应
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken("token value");
+        tokenResponse.setToken(token);
         return ResponseResult.success(tokenResponse);
     }
 
