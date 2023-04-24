@@ -95,12 +95,16 @@ public class VerificationCodeService {
         String accessToken = JwtUtils.generatorToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenTypeConstants.ACCESS_TOKEN_TYPE);
         //将token存到redis中
         String key1 = RedisPrefixUtils.generatorTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY,TokenTypeConstants.ACCESS_TOKEN_TYPE);
-        stringRedisTemplate.opsForValue().set(key1,accessToken,30,TimeUnit.DAYS);
+//        stringRedisTemplate.opsForValue().set(key1,accessToken,30,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(key1,accessToken,10,TimeUnit.SECONDS);
+
 
         String refreshToken = JwtUtils.generatorToken(passengerPhone, IdentityConstants.PASSENGER_IDENTITY, TokenTypeConstants.REFRESH_TOKEN_TYPE);
         //将token存到redis中
         String key2 = RedisPrefixUtils.generatorTokenKey(passengerPhone, IdentityConstants.PASSENGER_IDENTITY,TokenTypeConstants.REFRESH_TOKEN_TYPE);
-        stringRedisTemplate.opsForValue().set(key2,refreshToken,31,TimeUnit.DAYS);
+//        stringRedisTemplate.opsForValue().set(key2,refreshToken,31,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(key2,refreshToken,50,TimeUnit.SECONDS);
+
 
         //响应
         TokenResponse tokenResponse = new TokenResponse();

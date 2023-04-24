@@ -3,6 +3,9 @@ package com.brain.servicepassengeruser.internalcommon.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.brain.servicepassengeruser.internalcommon.dto.TokenResult;
@@ -25,17 +28,16 @@ public class JwtUtils {
 
     private static final String TOKEN_TYPE = "accessToken";
 
+    private static final String TOKEN_TYPE_TIME = "tokenTime";
+
     //生成token
     public static String generatorToken(String passengerPhone,String identity,String accessToken){
         Map<String,String> map = new HashMap<>();
         map.put(JWT_KEY_PHONE,passengerPhone);
         map.put(JWT_KEY_IDENTITY,identity);
         map.put(TOKEN_TYPE,accessToken);
-
-        //token过期时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,1);
-        Date date = calendar.getTime();
+        //防止生成的token一致
+        map.put(TOKEN_TYPE_TIME,Calendar.getInstance().getTime().toString());
 
         JWTCreator.Builder builder = JWT.create();
 
@@ -65,6 +67,17 @@ public class JwtUtils {
         tokenResult.setIdentity(identity);
         return tokenResult;
     }
+
+    public static TokenResult tokenCheck(String token){
+        TokenResult tokenResult = null;
+        try{
+            tokenResult = JwtUtils.parseToken(token);
+        }catch (Exception e){
+
+        }
+        return tokenResult;
+    }
+
     @Test
     public void test(){
         String s = generatorToken("13253425342","1","accessToken");

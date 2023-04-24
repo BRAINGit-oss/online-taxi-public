@@ -13,6 +13,11 @@ public enum CommonStatusEnum {
     VERIFICATION_CODE_ERROR(1099,"验证码不正确"),
 
     /**
+     * token提示：1100-1199
+     */
+    TOKEN_ERROR(1199,"token异常"),
+
+    /**
      * 成功
      */
     SUCCESS(1,"success"),
