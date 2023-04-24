@@ -4,9 +4,7 @@ import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.VerificationCodeDTO;
 import com.brain.servicepassengerusers.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -20,4 +18,11 @@ public class UserController {
         System.out.println("手机号："+passengerPhone);
         return userService.loginOrRegistor(passengerPhone);
     }
+
+    @GetMapping("/user/{phone}")
+    public ResponseResult queryByPassengerPhone(@PathVariable("phone") String passengerPhone){
+        System.out.println("user service被调用，手机号："+passengerPhone);
+        return userService.getUserInfoByPhone(passengerPhone);
+    }
+
 }

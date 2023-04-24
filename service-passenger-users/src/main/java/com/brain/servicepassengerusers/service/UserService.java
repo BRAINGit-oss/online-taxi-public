@@ -1,5 +1,6 @@
 package com.brain.servicepassengerusers.service;
 
+import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.dto.PassengerUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengerusers.mapper.PassengerUserMapper;
@@ -44,5 +45,20 @@ public class UserService {
         //如果不存在，插入用户信息
 
         return ResponseResult.success();
+    }
+
+    public ResponseResult getUserInfoByPhone(String passengerPhone){
+        //根据手机号查询用户信息
+        Map<String,Object> map = new HashMap<>();
+        map.put("passenger_phone",passengerPhone);
+        List<PassengerUser> passengerUserList = passengerUserMapper.selectByMap(map);
+
+        if(passengerUserList.size()==0){
+            return ResponseResult.fail(CommonStatusEnum.USER_NOT_EXITS.getCode(),CommonStatusEnum.USER_NOT_EXITS.getValue());
+        }else{
+            PassengerUser passengerUser = passengerUserList.get(0);
+            return ResponseResult.success(passengerUser);
+        }
+
     }
 }

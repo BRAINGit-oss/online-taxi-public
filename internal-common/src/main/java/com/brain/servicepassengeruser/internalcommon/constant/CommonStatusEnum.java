@@ -18,6 +18,11 @@ public enum CommonStatusEnum {
     TOKEN_ERROR(1199,"token异常"),
 
     /**
+     * user提示：1200-1299
+     */
+    USER_NOT_EXITS(1299,"用户不存在"),
+
+    /**
      * 成功
      */
     SUCCESS(1,"success"),

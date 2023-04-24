@@ -15,4 +15,7 @@ public interface ServicePassengerUsersClient {
     @RequestMapping(method = RequestMethod.POST,value="/user")
     ResponseResult getNumberCode(@RequestBody VerificationCodeDTO verificationCodeDTO);
 
+    @RequestMapping(method=RequestMethod.GET,value="/user/{phone}")
+    ResponseResult getUserByPhone(@PathVariable("phone") String passengerPhone);
+
 }
