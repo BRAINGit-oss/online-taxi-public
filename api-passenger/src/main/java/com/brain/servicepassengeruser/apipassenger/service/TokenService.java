@@ -44,11 +44,11 @@ public class TokenService {
         String refreshToken2 = JwtUtils.generatorToken(phone, identity, TokenTypeConstants.REFRESH_TOKEN_TYPE);
 
         String accessTokenKey = RedisPrefixUtils.generatorTokenKey(phone, identity, TokenTypeConstants.ACCESS_TOKEN_TYPE);
-//        stringRedisTemplate.opsForValue().set(accessTokenKey,accessToken,30, TimeUnit.DAYS);
-//        stringRedisTemplate.opsForValue().set(refreshTokenKey,refreshToken,31,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(accessTokenKey,accessToken,30, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(refreshTokenKey,refreshToken,31,TimeUnit.DAYS);
 
-        stringRedisTemplate.opsForValue().set(accessTokenKey,accessToken,10, TimeUnit.SECONDS);
-        stringRedisTemplate.opsForValue().set(refreshTokenKey,refreshToken,50,TimeUnit.SECONDS);
+//        stringRedisTemplate.opsForValue().set(accessTokenKey,accessToken,10, TimeUnit.SECONDS);
+//        stringRedisTemplate.opsForValue().set(refreshTokenKey,refreshToken,50,TimeUnit.SECONDS);
 
 
 

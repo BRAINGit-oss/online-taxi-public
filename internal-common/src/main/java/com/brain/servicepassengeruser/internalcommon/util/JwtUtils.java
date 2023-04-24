@@ -78,14 +78,14 @@ public class JwtUtils {
         return tokenResult;
     }
 
-    @Test
-    public void test(){
-        String s = generatorToken("13253425342","1","accessToken");
-        System.out.println("生成的token:"+s);
-        System.out.println("解析后的token值：");
-        TokenResult tokenResult = parseToken(s);
-        System.out.println("手机号："+tokenResult.getPhone());
-        System.out.println("身份："+tokenResult.getIdentity());
-    }
+//    @Test
+//    public void test(){
+//        String s = generatorToken("13253425342","1","accessToken");
+//        System.out.println("生成的token:"+s);
+//        System.out.println("解析后的token值：");
+//        TokenResult tokenResult = parseToken(s);
+//        System.out.println("手机号："+tokenResult.getPhone());
+//        System.out.println("身份："+tokenResult.getIdentity());
+//    }
 }
 

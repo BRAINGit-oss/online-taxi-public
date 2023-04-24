@@ -1,12 +1,10 @@
 package com.brain.servicepassengerusers.service;
 
+import com.brain.servicepassengeruser.internalcommon.dto.PassengerUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
-import com.brain.servicepassengerusers.dto.PassengerUser;
 import com.brain.servicepassengerusers.mapper.PassengerUserMapper;
-import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

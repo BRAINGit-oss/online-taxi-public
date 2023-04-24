@@ -1,9 +1,9 @@
-package com.brain.servicepassengerusers.dto;
+package com.brain.servicepassengeruser.internalcommon.dto;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 @Data
 public class PassengerUser {
     private Long id;
@@ -19,4 +19,6 @@ public class PassengerUser {
     private byte passengerGender;
 
     private byte state;
+
+    private String profilePhoto;
 }
