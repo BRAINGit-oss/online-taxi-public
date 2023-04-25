@@ -2,6 +2,8 @@ package com.brain.servicepassengeruser.internalcommon.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class PriceRule {
 
@@ -9,11 +11,11 @@ public class PriceRule {
 
     private String vehicleType;
 
-    private String startFare;
+    private BigDecimal startFare;
 
-    private int startMile;
+    private Integer startMile;
 
-    private double unitPricePerMile;
+    private Double unitPricePerMile;
 
-    private double unitPricePerMinute;
+    private Double unitPricePerMinute;
 }
