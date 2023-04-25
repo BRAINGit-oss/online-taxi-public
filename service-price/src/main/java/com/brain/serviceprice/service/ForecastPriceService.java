@@ -31,6 +31,10 @@ public class ForecastPriceService {
         forecastPriceDTO.setDesLongitude(desLongitude);
         forecastPriceDTO.setDesLatitude(desLatitude);
         ResponseResult<DirectionResponse> direction = serviceMapClient.direction(forecastPriceDTO);
+        Integer distance = direction.getData().getDistance();
+        Integer duration = direction.getData().getDuration();
+        log.info("距离：（米）"+distance);
+        log.info("时长：（分）"+duration);
 
         log.info("读取计价规则");
 
@@ -39,6 +43,6 @@ public class ForecastPriceService {
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(12.23);
 
-        return ResponseResult.success(direction);
+        return ResponseResult.success(forecastPriceResponse);
     }
 }
