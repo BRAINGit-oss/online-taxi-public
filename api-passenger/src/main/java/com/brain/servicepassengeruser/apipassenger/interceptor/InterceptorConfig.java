@@ -23,6 +23,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/verification-code")
                 .excludePathPatterns("/verification-code-check")
                 .excludePathPatterns("/token-refresh")
-                .excludePathPatterns("/forecast-price");
+                .excludePathPatterns("/forecast-price")
+                .excludePathPatterns("/direction/driving");
     }
 }

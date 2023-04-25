@@ -7,11 +7,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.brain.serviceprice</groupId>
-    <artifactId>service-price</artifactId>
+    <groupId>com.brain.servicemap</groupId>
+    <artifactId>service-map</artifactId>
     <packaging>jar</packaging>
 
-    <name>service-price</name>
+    <name>service-map</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -39,16 +39,6 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <!--  add openfeign、loadbalancer-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
     </dependencies>
 </project>
