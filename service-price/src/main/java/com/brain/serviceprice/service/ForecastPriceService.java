@@ -1,14 +1,21 @@
 package com.brain.serviceprice.service;
 
+import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
+import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.ForecastPriceDTO;
 import com.brain.servicepassengeruser.internalcommon.response.DirectionResponse;
 import com.brain.servicepassengeruser.internalcommon.response.ForecastPriceResponse;
+import com.brain.serviceprice.mapper.PriceRuleMapper;
 import com.brain.serviceprice.remote.ServiceMapClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -16,6 +23,9 @@ public class ForecastPriceService {
 
     @Autowired
     ServiceMapClient serviceMapClient;
+
+    @Autowired
+    PriceRuleMapper priceRuleMapper;
 
     public ResponseResult forecastPriceByJW(String depLongitude,String depLatitude,String desLongitude,String desLatitude){
         log.info("出发地经度"+depLongitude);
@@ -37,6 +47,17 @@ public class ForecastPriceService {
         log.info("时长：（分）"+duration);
 
         log.info("读取计价规则");
+        Map<String, Object> map = new HashMap<>();
+        map.put("city_code","110000");
+        map.put("vehicle_type","1");
+        List<PriceRule> priceRuleMappers = priceRuleMapper.selectByMap(map);
+        if(priceRuleMappers.size()==0){
+            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_ERROR.getCode(),CommonStatusEnum.PRICE_RULE_ERROR.getValue());
+        }
+
+        //获取价格规则信息
+        PriceRule priceRule = priceRuleMappers.get(0);
+
 
         log.info("根据距离、时长和计价规则，计算价格");
 

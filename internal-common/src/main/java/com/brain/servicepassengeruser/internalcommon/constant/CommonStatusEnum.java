@@ -20,7 +20,13 @@ public enum CommonStatusEnum {
     /**
      * user提示：1200-1299
      */
-    USER_NOT_EXITS(1299,"用户不存在"),
+    USER_NOT_EXITS(1200,"用户不存在"),
+
+    /**
+     * 根据city_code&vehicle_type获取价格规则
+     * 价格规则无效：1300-1399
+     */
+    PRICE_RULE_ERROR(1300,"价格规则无效"),
 
     /**
      * 成功
