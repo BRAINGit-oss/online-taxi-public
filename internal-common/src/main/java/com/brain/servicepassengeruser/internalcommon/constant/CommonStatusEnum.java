@@ -29,6 +29,11 @@ public enum CommonStatusEnum {
     PRICE_RULE_ERROR(1300,"价格规则无效"),
 
     /**
+     * 行政区域无效：1400-1499
+     */
+    DISTRICT_ERROR(1400,"行政区域无效"),
+
+    /**
      * 成功
      */
     SUCCESS(1,"success"),

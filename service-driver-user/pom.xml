@@ -7,11 +7,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.brain.servicemap</groupId>
-    <artifactId>service-map</artifactId>
+    <groupId>com.brain.servicedriveruser</groupId>
+    <artifactId>service-driver-user</artifactId>
     <packaging>jar</packaging>
 
-    <name>service-map</name>
+    <name>service-driver-user</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -29,18 +29,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.brain</groupId>
-            <artifactId>internal-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--add nacos-->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-
         <!--配置mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -50,6 +38,21 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!--add nacos-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.brain</groupId>
+            <artifactId>internal-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

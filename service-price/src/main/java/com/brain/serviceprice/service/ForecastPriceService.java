@@ -6,6 +6,7 @@ import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.ForecastPriceDTO;
 import com.brain.servicepassengeruser.internalcommon.response.DirectionResponse;
 import com.brain.servicepassengeruser.internalcommon.response.ForecastPriceResponse;
+import com.brain.servicepassengeruser.internalcommon.util.BigDecimalUtils;
 import com.brain.serviceprice.mapper.PriceRuleMapper;
 import com.brain.serviceprice.remote.ServiceMapClient;
 import lombok.extern.slf4j.Slf4j;
@@ -76,49 +77,50 @@ public class ForecastPriceService {
      * @param priceRule 计价规则
      * @return
      */
-    private double getPrice(Integer distance,Integer duration,PriceRule priceRule){
+    private static double getPrice(Integer distance,Integer duration,PriceRule priceRule){
         //BigDecimal
         //起步价+（距离/1000-起步里程）*每里程单价+(秒/60)*每分钟单价
         //起步价
-        BigDecimal price = new BigDecimal(0);
-        BigDecimal startFace = price.add(priceRule.getStartFare()).setScale(2, BigDecimal.ROUND_UP);
+        double price = 0;
+        double startFare = priceRule.getStartFare().doubleValue();
+        price = BigDecimalUtils.add(price,startFare);
 
         //里程费 （距离/1000-起步里程）*每里程单价
         //里程价格
-        BigDecimal distanceDecimal = new BigDecimal(distance);
-        BigDecimal distanceDecimalDivide = distanceDecimal.divide(new BigDecimal(1000), 2, BigDecimal.ROUND_UP);
+        double distanceDecimalDivide =  BigDecimalUtils.divide(distance,1000);
         //起步里程
         Integer startMile = priceRule.getStartMile();
-        BigDecimal startMilePrice = new BigDecimal(startMile);
-        double distanceDecimalDivideSubtract= distanceDecimalDivide.subtract(startMilePrice).setScale(2, BigDecimal.ROUND_UP).doubleValue();
-        Double mile = distanceDecimalDivideSubtract<0?0:distanceDecimalDivideSubtract;
-        BigDecimal mileDecimalDivide = new BigDecimal(mile);
+        double distanceDecimalDivideSubtract=BigDecimalUtils.substract(distanceDecimalDivide,startMile);
+
         //每里程单价
+        Double mile = distanceDecimalDivideSubtract<0?0:distanceDecimalDivideSubtract;
         Double unitPricePerMile = priceRule.getUnitPricePerMile();
-        BigDecimal unitPricePerMileDecimal = new BigDecimal(unitPricePerMile);
-        BigDecimal mileFare = mileDecimalDivide.multiply(unitPricePerMileDecimal);
+
+        double mileFare = BigDecimalUtils.multiply(mile,unitPricePerMile);
         //里程价格
-        price = startFace.add(mileFare);
+        price = BigDecimalUtils.add(startFare,mileFare);
 
         //时长费
-        BigDecimal durationDecimal = new BigDecimal(duration);
-        BigDecimal minute = durationDecimal.divide(new BigDecimal(60), 2, BigDecimal.ROUND_UP);
-        Double unitPricePerMinute = priceRule.getUnitPricePerMinute();
-        BigDecimal unitPricePerMinuteBigDecimal = new BigDecimal(unitPricePerMinute);
-        BigDecimal timeFare = minute.multiply(unitPricePerMinuteBigDecimal).setScale(2, BigDecimal.ROUND_UP);
+        double minute = BigDecimalUtils.divide(duration,60);
 
-        price = price.add(timeFare).setScale(2,BigDecimal.ROUND_UP);
+        double unitPricePerMinute = priceRule.getUnitPricePerMinute();
+        double timeFare = BigDecimalUtils.multiply(minute,unitPricePerMinute);
 
-        return price.doubleValue();
+        price = BigDecimalUtils.add(price,timeFare);
+
+        BigDecimal bigDecimal = new BigDecimal(price);
+        BigDecimal priceDecimal = bigDecimal.setScale(2, BigDecimal.ROUND_UP);
+
+        return priceDecimal.doubleValue();
     }
 
-//    public static void main(String[] args) {
-//        PriceRule priceRule = new PriceRule();
-//        priceRule.setStartFare(BigDecimal.valueOf(10.0));
-//        priceRule.setStartMile(3);
-//        priceRule.setUnitPricePerMile(1.8);
-//        priceRule.setUnitPricePerMinute(0.5);
-//
-//        System.out.println(getPrice(6500,1800,priceRule));
-//    }
+    public static void main(String[] args) {
+        PriceRule priceRule = new PriceRule();
+        priceRule.setStartFare(BigDecimal.valueOf(10.0));
+        priceRule.setStartMile(3);
+        priceRule.setUnitPricePerMile(1.8);
+        priceRule.setUnitPricePerMinute(0.5);
+
+        System.out.println(getPrice(6500,1800,priceRule));
+    }
 }
