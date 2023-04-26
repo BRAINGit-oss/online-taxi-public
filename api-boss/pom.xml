@@ -7,11 +7,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.brain.servicedriveruser</groupId>
-    <artifactId>service-driver-user</artifactId>
+    <groupId>com.brain.apiboss</groupId>
+    <artifactId>api-boss</artifactId>
     <packaging>jar</packaging>
 
-    <name>service-driver-user</name>
+    <name>api-boss</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -25,22 +25,10 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
-        <!--配置SpringBoot启动类-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--配置mybatis-plus-->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <!--add nacos-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
@@ -49,10 +37,9 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-commons</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>com.brain</groupId>

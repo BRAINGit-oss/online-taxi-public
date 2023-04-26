@@ -1,6 +1,6 @@
-package com.brain.servicedriveruser.controller;
+package com.brain.apiboss.controller;
 
-import com.brain.servicedriveruser.service.DriverUserService;
+import com.brain.apiboss.service.DriverUserService;
 import com.brain.servicepassengeruser.internalcommon.dto.DriverUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class DriverUserController {
     @Autowired
     DriverUserService driverUserService;
 
-    @PostMapping("/users")
+    @PostMapping("/driver-user")
     public ResponseResult addDriverUser(@RequestBody DriverUser driverUser){
         return driverUserService.addUser(driverUser);
     }
