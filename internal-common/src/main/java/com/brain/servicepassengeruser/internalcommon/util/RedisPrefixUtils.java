@@ -3,7 +3,7 @@ package com.brain.servicepassengeruser.internalcommon.util;
 public class RedisPrefixUtils {
 
     //乘客验证码的前缀
-    public static String verificationCodePrefix = "passenger-verification-code-";
+    public static String verificationCodePrefix = "verification-code-";
 
     //token的前缀
     public static String tokenPrefix = "token-";
@@ -13,8 +13,14 @@ public class RedisPrefixUtils {
      * @param passengerPhone
      * @return
      */
-    public static String generatorKeyByPhone(String passengerPhone){
-        return verificationCodePrefix + passengerPhone;
+    /**
+     *
+     * @param passengerPhone
+     * @param instance 身份标识 1：乘客 2：司机
+     * @return
+     */
+    public static String generatorKeyByPhone(String passengerPhone,String instance){
+        return verificationCodePrefix+ instance+"-" + passengerPhone;
     }
 
     /**

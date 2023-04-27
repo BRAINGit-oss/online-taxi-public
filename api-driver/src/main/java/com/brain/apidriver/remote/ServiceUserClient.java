@@ -2,11 +2,9 @@ package com.brain.apidriver.remote;
 
 import com.brain.servicepassengeruser.internalcommon.dto.DriverUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.response.CheckPhoneResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 
 @FeignClient("service-driver-user")
@@ -14,5 +12,8 @@ public interface ServiceUserClient {
 
     @RequestMapping(method = RequestMethod.PUT,value = "/user")
     ResponseResult updateUserClient(@RequestBody DriverUser driverUser);
+
+    @RequestMapping(method = RequestMethod.GET,value = "/check-driver-phone/{driverPhone}")
+    ResponseResult<CheckPhoneResponse> checkPhone(@PathVariable("driverPhone") String driverPhone);
 
 }
