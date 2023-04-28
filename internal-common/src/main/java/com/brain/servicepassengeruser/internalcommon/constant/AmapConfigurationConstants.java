@@ -12,6 +12,16 @@ public class AmapConfigurationConstants {
     public static final String DISTRICT_URL = "https://restapi.amap.com/v3/config/district";
 
     /**
+     * 服务创建地址
+     */
+    public static final String SERVICE_ADD = "https://tsapi.amap.com/v1/track/service/add";
+
+    /**
+     * 终端创建地址
+     */
+    public static final String TERMINAL_ADD = "https://tsapi.amap.com/v1/track/terminal/add";
+
+    /**
      * 状态 1：成功；0：失败
      */
     public static final String STATUS = "status";
@@ -45,4 +55,19 @@ public class AmapConfigurationConstants {
     public static final String DISTRICTS = "districts";
 
     public static final String STREET = "street";
+
+    /**
+     * 服务创建响应data
+     */
+    public static final String DATA = "data";
+
+    /**
+     * 服务创建响应sid
+     */
+    public static final String SID = "sid";
+
+    /**
+     * 终端创建响应tid
+     */
+    public static final String TID = "tid";
 }

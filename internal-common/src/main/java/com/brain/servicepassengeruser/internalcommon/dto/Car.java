@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -167,4 +168,19 @@ public class Car implements Serializable {
      * 0：有效 1：失效
      */
     private Integer state;
+
+    /**
+     * 服务id
+     */
+    private String tid;
+
+    /**
+     * 车辆创建时间
+     */
+    private LocalDateTime gmtCreate;
+
+    /**
+     * 车辆修改时间
+     */
+    private LocalDateTime gmtModify;
 }
