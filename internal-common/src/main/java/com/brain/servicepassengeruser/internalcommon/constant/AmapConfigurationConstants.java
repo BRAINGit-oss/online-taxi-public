@@ -22,6 +22,16 @@ public class AmapConfigurationConstants {
     public static final String TERMINAL_ADD = "https://tsapi.amap.com/v1/track/terminal/add";
 
     /**
+     * 轨迹创建地址
+     */
+    public static final String TRACK_ADD = "https://tsapi.amap.com/v1/track/trace/add";
+
+    /**
+     * 轨迹上传地址
+     */
+    public static final String POINTS_UPLOAD = "https://tsapi.amap.com/v1/track/point/upload";
+
+    /**
      * 状态 1：成功；0：失败
      */
     public static final String STATUS = "status";
@@ -70,4 +80,9 @@ public class AmapConfigurationConstants {
      * 终端创建响应tid
      */
     public static final String TID = "tid";
+
+    /**
+     * 轨迹创建响应trid
+     */
+    public static final String TRID = "trid";
 }

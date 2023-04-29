@@ -175,6 +175,15 @@ public class Car implements Serializable {
     private String tid;
 
     /**
+     * 轨迹id
+     */
+    private String trid;
+
+    /**
+     * 轨迹名
+     */
+    private String trname;
+    /**
      * 车辆创建时间
      */
     private LocalDateTime gmtCreate;

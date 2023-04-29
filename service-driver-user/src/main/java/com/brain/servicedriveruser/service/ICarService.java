@@ -5,6 +5,7 @@ import com.brain.servicedriveruser.remote.TerminalClient;
 import com.brain.servicepassengeruser.internalcommon.dto.Car;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.response.TerminalResponse;
+import com.brain.servicepassengeruser.internalcommon.response.TrackResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,14 @@ public class ICarService{
         ResponseResult<TerminalResponse> serviceResponseResponseResult = terminalClient.addTerminal(car.getVehicleNo());
         String tid = serviceResponseResponseResult.getData().getTid();
         car.setTid(tid);
+
+        //调用猎鹰API远程接口获取trid
+        ResponseResult<TrackResponse> trackResponseResponseResult = terminalClient.addTrack(tid);
+        String trid = trackResponseResponseResult.getData().getTrid();
+        String trname = trackResponseResponseResult.getData().getTrname();
+        car.setTrid(trid);
+        car.setTrname(trname);
+
 
         carMapper.insert(car);
         return ResponseResult.success("");
