@@ -15,7 +15,7 @@ public class TerminalService {
     @Autowired
     MapTerminalClinet mapTerminalClinet;
 
-    public ResponseResult<TerminalResponse> addTerminal(String terminalName){
-        return mapTerminalClinet.addTerminal(terminalName);
+    public ResponseResult<TerminalResponse> addTerminal(String terminalName,String desc){
+        return mapTerminalClinet.addTerminal(terminalName,desc);
     }
 }

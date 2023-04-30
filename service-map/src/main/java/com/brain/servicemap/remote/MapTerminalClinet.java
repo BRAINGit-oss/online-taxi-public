@@ -35,7 +35,7 @@ public class MapTerminalClinet {
      * 终端创建字符串拼接，调用高德API（restTemplate）,解析JSON，获取tid,返回TerminalResponse对象
      */
 
-    public ResponseResult<TerminalResponse> addTerminal(String terminalName){
+    public ResponseResult<TerminalResponse> addTerminal(String terminalName,String desc){
 
         /**
          *https://tsapi.amap.com/v1/track/terminal/add
@@ -45,6 +45,7 @@ public class MapTerminalClinet {
          * sid=932958
          * &
          * name=车辆1
+         *
          */
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(AmapConfigurationConstants.TERMINAL_ADD);
@@ -54,6 +55,8 @@ public class MapTerminalClinet {
         stringBuilder.append("sid="+amapSid);
         stringBuilder.append("&");
         stringBuilder.append("name="+terminalName);
+        stringBuilder.append("&");
+        stringBuilder.append("desc="+desc);
 
 
         log.info(stringBuilder.toString());

@@ -1,7 +1,8 @@
-package com.brain.servicedriveruser.controller;
+package com.brain.apidriver.controller;
 
-import com.brain.servicedriveruser.service.PointService;
+import com.brain.apidriver.service.PointService;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.ApiDriverRequest;
 import com.brain.servicepassengeruser.internalcommon.request.PointsRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ public class PointController {
     PointService pointService;
 
     @PostMapping("/upload")
-    public ResponseResult pointsUpload(@RequestBody PointsRequest pointsRequest){
+    public ResponseResult pointsUpload(@RequestBody ApiDriverRequest apiDriverRequest){
 
-        return pointService.pointUpload(pointsRequest);
+        return pointService.pointUpload(apiDriverRequest);
     }
 }

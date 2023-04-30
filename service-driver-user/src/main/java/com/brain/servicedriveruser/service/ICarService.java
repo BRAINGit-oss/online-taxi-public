@@ -4,12 +4,16 @@ import com.brain.servicedriveruser.mapper.CarMapper;
 import com.brain.servicedriveruser.remote.ServiceMapClient;
 import com.brain.servicepassengeruser.internalcommon.dto.Car;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.ApiDriverRequest;
 import com.brain.servicepassengeruser.internalcommon.response.TerminalResponse;
 import com.brain.servicepassengeruser.internalcommon.response.TrackResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -38,8 +42,10 @@ public class ICarService{
         car.setGmtCreate(now);
         car.setGmtModify(now);
 
+        carMapper.insert(car);
+
         //调用猎鹰API远程接口获取tid
-        ResponseResult<TerminalResponse> serviceResponseResponseResult = terminalClient.addTerminal(car.getVehicleNo());
+        ResponseResult<TerminalResponse> serviceResponseResponseResult = terminalClient.addTerminal(car.getVehicleNo(),car.getId()+"");
         String tid = serviceResponseResponseResult.getData().getTid();
         car.setTid(tid);
 
@@ -50,9 +56,15 @@ public class ICarService{
         car.setTrid(trid);
         car.setTrname(trname);
 
-
-        carMapper.insert(car);
+        carMapper.updateById(car);
         return ResponseResult.success("");
     }
 
+    public ResponseResult<Car> getCarById(ApiDriverRequest apiDriverRequest){
+        Map<String,Object> map = new HashMap<>();
+        map.put("id",apiDriverRequest.getCarId());
+        Car car = carMapper.selectById((Serializable) map);
+
+        return ResponseResult.success(car);
+    }
 }

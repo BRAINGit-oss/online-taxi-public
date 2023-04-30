@@ -4,6 +4,7 @@ package com.brain.servicedriveruser.controller;
 import com.brain.servicedriveruser.service.ICarService;
 import com.brain.servicepassengeruser.internalcommon.dto.Car;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.ApiDriverRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,12 @@ public class CarController {
     ResponseResult addCar(@RequestBody Car car){
 
         return iCarService.addCar(car);
+    }
+
+    @RequestMapping("/carId")
+    ResponseResult<Car> getCarById(@RequestBody ApiDriverRequest apiDriverRequest){
+
+        return iCarService.getCarById(apiDriverRequest);
     }
 
 }
