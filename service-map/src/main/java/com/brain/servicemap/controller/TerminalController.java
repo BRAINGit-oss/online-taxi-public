@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/terminal")
 public class TerminalController {
@@ -19,5 +21,11 @@ public class TerminalController {
     @PostMapping("/add")
     public ResponseResult<TerminalResponse> addTerminal(@RequestParam String name,@RequestParam String desc){
         return terminalService.addTerminal(name,desc);
+    }
+
+    @PostMapping("/aroundsearch")
+    public ResponseResult<List<TerminalResponse>> aroundSearch(@RequestParam String center, @RequestParam Integer radius){
+
+        return terminalService.aroundSearch(center,radius);
     }
 }

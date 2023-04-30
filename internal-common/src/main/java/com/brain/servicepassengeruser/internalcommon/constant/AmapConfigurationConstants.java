@@ -32,6 +32,11 @@ public class AmapConfigurationConstants {
     public static final String POINTS_UPLOAD = "https://tsapi.amap.com/v1/track/point/upload";
 
     /**
+     * 终端查询
+     */
+    public static final String TERMINAL_UPLOAD = "https://tsapi.amap.com/v1/track/terminal/aroundsearch";
+
+    /**
      * 状态 1：成功；0：失败
      */
     public static final String STATUS = "status";
