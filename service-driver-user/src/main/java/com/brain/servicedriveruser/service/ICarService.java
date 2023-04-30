@@ -1,7 +1,7 @@
 package com.brain.servicedriveruser.service;
 
 import com.brain.servicedriveruser.mapper.CarMapper;
-import com.brain.servicedriveruser.remote.TerminalClient;
+import com.brain.servicedriveruser.remote.ServiceMapClient;
 import com.brain.servicepassengeruser.internalcommon.dto.Car;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.response.TerminalResponse;
@@ -26,7 +26,7 @@ public class ICarService{
     public CarMapper carMapper;
 
     @Autowired
-    TerminalClient terminalClient;
+    ServiceMapClient terminalClient;
 
     public ResponseResult test(){
         com.brain.servicepassengeruser.internalcommon.dto.Car car = carMapper.selectById(1);
