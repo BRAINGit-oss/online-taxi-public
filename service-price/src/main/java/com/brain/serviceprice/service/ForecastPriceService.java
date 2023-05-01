@@ -116,7 +116,7 @@ public class ForecastPriceService {
 
     public static void main(String[] args) {
         PriceRule priceRule = new PriceRule();
-        priceRule.setStartFare(BigDecimal.valueOf(10.0));
+        priceRule.setStartFare(10.0);
         priceRule.setStartMile(3);
         priceRule.setUnitPricePerMile(1.8);
         priceRule.setUnitPricePerMinute(0.5);

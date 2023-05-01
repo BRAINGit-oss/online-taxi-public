@@ -17,6 +17,11 @@ public class PointController {
     @Autowired
     PointService pointService;
 
+    /**
+     * 轨迹上传
+     * @param apiDriverRequest [carId,points[location,locationtime]]
+     * @return success
+     */
     @PostMapping("/upload")
     public ResponseResult pointsUpload(@RequestBody ApiDriverRequest apiDriverRequest){
 

@@ -16,6 +16,11 @@ public class PoinsController {
     @Autowired
     PointService pointService;
 
+    /**
+     * 轨迹上传
+     * @param pointsRequest [tid,trid,points[location,locationtime]]
+     * @return success
+     */
     @PostMapping("/upload")
     public ResponseResult pointUpload(@RequestBody PointsRequest pointsRequest){
 

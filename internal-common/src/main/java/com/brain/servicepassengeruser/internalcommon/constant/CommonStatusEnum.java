@@ -28,6 +28,12 @@ public enum CommonStatusEnum {
      */
     PRICE_RULE_ERROR(1300,"价格规则无效"),
 
+    PRICE_RULE_EXISTS(1301,"计价规则已存在"),
+
+    PRICE_RULE_NOT_EXISTS(1302,"计价规则不存在"),
+
+    PRICE_RULE_NOT_EDIT(1303,"计价规则已存在，不允许添加"),
+
     /**
      * 行政区域无效：1400-1499
      */

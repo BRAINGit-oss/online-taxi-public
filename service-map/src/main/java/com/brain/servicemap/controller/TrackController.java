@@ -15,6 +15,11 @@ public class TrackController {
     @Autowired
     TrackService trackService;
 
+    /**
+     * 轨迹创建
+     * @param tid 终端id
+     * @return trid,trname 轨迹id,轨迹名
+     */
     @PostMapping("/add")
     public ResponseResult<TrackResponse> addTrack(String tid){
 

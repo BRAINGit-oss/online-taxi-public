@@ -33,12 +33,22 @@ public class CarController {
         return iCarService.test();
     }
 
+    /**
+     * 创建车辆信息 同时添加tid(终端id)&trid(轨迹id)
+     * @param car 车辆信息
+     * @return success
+     */
     @RequestMapping("/car")
     ResponseResult addCar(@RequestBody Car car){
 
         return iCarService.addCar(car);
     }
 
+    /**
+     * 通过id获取车辆信息
+     * @param apiDriverRequest [carId,points[location,lacationtime]]
+     * @return car
+     */
     @RequestMapping("/carId")
     ResponseResult<Car> getCarById(@RequestBody ApiDriverRequest apiDriverRequest){
 

@@ -1,6 +1,6 @@
-package com.brain.serviceprice.mapper;
+package com.brain.serviceorder.mapper;
 
-import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
+import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * @since 2023-05-01
  */
 @Repository
-public interface PriceRuleMapper extends BaseMapper<PriceRule> {
+public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
 
 }
