@@ -34,6 +34,8 @@ public enum CommonStatusEnum {
 
     PRICE_RULE_NOT_EDIT(1303,"计价规则已存在，不允许添加"),
 
+    PRICE_RULE_CHANGED(1304,"计价规则已改变"),
+
     /**
      * 行政区域无效：1400-1499
      */
@@ -55,6 +57,11 @@ public enum CommonStatusEnum {
     DRIVER_STATUS_UNVALID(1505,"司机状态不可用"),
 
     WORK_STATUS_NOT_EXISTS(1506,"司机工作状态异常"),
+
+    /**
+     * 订单提示信息:1600-1699
+     */
+    ORDER_GOING_ON(1600,"有订单正在进行"),
 
 
     /**

@@ -47,7 +47,7 @@ public class ResponseResult<T>{
      * @return
      */
     public static ResponseResult fail(int code,String message){
-        return new ResponseResult().setCode(code).setMessage(message);
+        return new ResponseResult().setCode(code).setMessage(message).setData("");
     }
 
     /**

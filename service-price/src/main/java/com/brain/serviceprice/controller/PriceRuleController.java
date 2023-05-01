@@ -5,12 +5,9 @@ import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.serviceprice.service.PriceRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -39,4 +36,15 @@ public class PriceRuleController {
         return priceRuleService.edit(priceRule);
     }
 
+    @GetMapping("/get-latest-version")
+    public ResponseResult<PriceRule> getLatestVersion(@RequestParam String fareType){
+
+        return priceRuleService.getLatestVersion(fareType);
+    }
+
+    @GetMapping("/is_latest")
+    public ResponseResult<Boolean> isLatast(@RequestParam String fareType,@RequestParam Integer fareVersion){
+
+        return priceRuleService.isLatest(fareType,fareVersion);
+    }
 }
