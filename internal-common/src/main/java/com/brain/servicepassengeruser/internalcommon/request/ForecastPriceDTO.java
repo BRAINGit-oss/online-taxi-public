@@ -33,4 +33,5 @@ public class ForecastPriceDTO {
      * 车辆类型
      */
     private String vehicleType;
+    
 }

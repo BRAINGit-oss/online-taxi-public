@@ -46,6 +46,7 @@ public class ForecastPriceService {
         forecastPriceDTO.setDesLatitude(desLatitude);
         forecastPriceDTO.setCityCode(cityCode);
         forecastPriceDTO.setVehicleType(vehicleType);
+
         ResponseResult<DirectionResponse> direction = serviceMapClient.direction(forecastPriceDTO);
         //计价素材
         Integer distance = direction.getData().getDistance();
@@ -75,6 +76,8 @@ public class ForecastPriceService {
         forecastPriceResponse.setPrice(price);
         forecastPriceResponse.setCityCode(cityCode);
         forecastPriceResponse.setVehicleType(vehicleType);
+        forecastPriceResponse.setFareType(priceRule.getFareType());
+        forecastPriceResponse.setFareVersion(priceRule.getFareVersion());
 
         return ResponseResult.success(forecastPriceResponse);
     }

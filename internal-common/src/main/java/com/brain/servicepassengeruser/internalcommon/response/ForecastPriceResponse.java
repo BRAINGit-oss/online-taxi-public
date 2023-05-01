@@ -14,4 +14,14 @@ public class ForecastPriceResponse {
      * 车辆类型
      */
     private String vehicleType;
+
+    /**
+     * 计价类型
+     */
+    private String fareType;
+
+    /**
+     * 计价版本
+     */
+    private Integer fareVersion;
 }
