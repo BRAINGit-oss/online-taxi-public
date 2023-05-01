@@ -40,6 +40,6 @@ public class BigDecimalUtils {
         }
         BigDecimal p1 = BigDecimal.valueOf(v1);
         BigDecimal p2 = BigDecimal.valueOf(v2);
-        return p1.divide(p2).setScale(2,BigDecimal.ROUND_UP).doubleValue();
+        return p1.divide(p2,BigDecimal.ROUND_UP).doubleValue();
     }
 }

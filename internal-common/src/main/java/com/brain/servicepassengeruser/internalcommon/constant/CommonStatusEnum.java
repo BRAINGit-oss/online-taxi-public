@@ -1,6 +1,6 @@
 package com.brain.servicepassengeruser.internalcommon.constant;
 
-import lombok.Data;
+
 import lombok.Getter;
 
 

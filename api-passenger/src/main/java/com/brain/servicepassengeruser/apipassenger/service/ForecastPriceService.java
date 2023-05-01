@@ -15,7 +15,8 @@ public class ForecastPriceService {
     @Autowired
     ServicePriceClient servicePriceClient;
 
-    public ResponseResult forecastPrice(String depLongitude,String depLatitude,String desLongitude,String desLatitude){
+    public ResponseResult forecastPrice(String depLongitude,String depLatitude,String desLongitude,
+                                        String desLatitude,String cityCode,String vehicleType){
 
         log.info("出发地经度"+depLongitude);
         log.info("出发地纬度"+depLatitude);
@@ -29,11 +30,15 @@ public class ForecastPriceService {
         forecastPriceDTO.setDepLatitude(depLatitude);
         forecastPriceDTO.setDesLongitude(desLongitude);
         forecastPriceDTO.setDesLatitude(desLatitude);
+        forecastPriceDTO.setCityCode(cityCode);
+        forecastPriceDTO.setVehicleType(vehicleType);
         ResponseResult<ForecastPriceResponse> forecastPrice = servicePriceClient.getForecastPrice(forecastPriceDTO);
         double price = forecastPrice.getData().getPrice();
 
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(price);
+        forecastPriceResponse.setCityCode(cityCode);
+        forecastPriceResponse.setVehicleType(vehicleType);
 
         return ResponseResult.success(forecastPriceResponse);
     }

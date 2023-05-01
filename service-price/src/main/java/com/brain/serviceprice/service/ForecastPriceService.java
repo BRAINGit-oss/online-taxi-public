@@ -1,5 +1,6 @@
 package com.brain.serviceprice.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
@@ -29,7 +30,8 @@ public class ForecastPriceService {
     @Autowired
     PriceRuleMapper priceRuleMapper;
 
-    public ResponseResult forecastPriceByJW(String depLongitude,String depLatitude,String desLongitude,String desLatitude){
+    public ResponseResult forecastPriceByJW(String depLongitude,String depLatitude,String desLongitude,
+                                            String desLatitude,String cityCode,String vehicleType){
         log.info("出发地经度"+depLongitude);
         log.info("出发地纬度"+depLatitude);
         log.info("目的地经度"+desLongitude);
@@ -42,6 +44,8 @@ public class ForecastPriceService {
         forecastPriceDTO.setDepLatitude(depLatitude);
         forecastPriceDTO.setDesLongitude(desLongitude);
         forecastPriceDTO.setDesLatitude(desLatitude);
+        forecastPriceDTO.setCityCode(cityCode);
+        forecastPriceDTO.setVehicleType(vehicleType);
         ResponseResult<DirectionResponse> direction = serviceMapClient.direction(forecastPriceDTO);
         //计价素材
         Integer distance = direction.getData().getDistance();
@@ -50,10 +54,13 @@ public class ForecastPriceService {
         log.info("时长：（分）"+duration);
 
         log.info("读取计价规则");
-        Map<String, Object> map = new HashMap<>();
-        map.put("city_code","110000");
-        map.put("vehicle_type","1");
-        List<PriceRule> priceRuleMappers = priceRuleMapper.selectByMap(map);
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("city_code",cityCode);
+        queryWrapper.eq("vehicle_type",vehicleType);
+        queryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRuleMappers = priceRuleMapper.selectList(queryWrapper);
+
         if(priceRuleMappers.size()==0){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_ERROR.getCode(),CommonStatusEnum.PRICE_RULE_ERROR.getValue());
         }
@@ -66,6 +73,8 @@ public class ForecastPriceService {
 
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(price);
+        forecastPriceResponse.setCityCode(cityCode);
+        forecastPriceResponse.setVehicleType(vehicleType);
 
         return ResponseResult.success(forecastPriceResponse);
     }
@@ -120,6 +129,8 @@ public class ForecastPriceService {
         priceRule.setStartMile(3);
         priceRule.setUnitPricePerMile(1.8);
         priceRule.setUnitPricePerMinute(0.5);
+        priceRule.setCityCode("110000");
+        priceRule.setVehicleType("1");
 
         System.out.println(getPrice(6500,1800,priceRule));
     }

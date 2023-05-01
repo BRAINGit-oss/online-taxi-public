@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("service-map")
 public interface ServiceMapClient {
 
+    //根据经纬度获取距离和时长
     @RequestMapping(method = RequestMethod.GET, value = "/direction/driving")
     public ResponseResult<DirectionResponse> direction(@RequestBody ForecastPriceDTO forecastPriceDTO);
 
