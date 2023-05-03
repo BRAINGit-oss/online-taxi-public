@@ -1,9 +1,11 @@
 package com.brain.serviceprice.controller;
 
 
+import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
 import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.serviceprice.service.PriceRuleService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,5 +48,10 @@ public class PriceRuleController {
     public ResponseResult<Boolean> isLatast(@RequestParam String fareType,@RequestParam Integer fareVersion){
 
         return priceRuleService.isLatest(fareType,fareVersion);
+    }
+
+    @GetMapping("/if_exits")
+    public ResponseResult<Boolean> ifExits(@RequestBody PriceRule priceRule){
+        return priceRuleService.isExits(priceRule);
     }
 }

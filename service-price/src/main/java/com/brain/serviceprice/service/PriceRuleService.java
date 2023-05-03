@@ -5,6 +5,7 @@ import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.serviceprice.mapper.PriceRuleMapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -115,5 +116,18 @@ public class PriceRuleService{
             return ResponseResult.success(true);
         }
 
+    }
+
+    public ResponseResult<Boolean> isExits(PriceRule priceRule){
+        QueryWrapper<PriceRule> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.eq("city_code",priceRule.getCityCode());
+        objectQueryWrapper.eq("vehicle_type",priceRule.getVehicleType());
+        objectQueryWrapper.orderByDesc("fare_version");
+        List<PriceRule> priceRules = priceRuleMapper.selectList(objectQueryWrapper);
+        if(priceRules.size()>0){
+            return ResponseResult.success(true);
+        }else{
+            return ResponseResult.success(false);
+        }
     }
 }
