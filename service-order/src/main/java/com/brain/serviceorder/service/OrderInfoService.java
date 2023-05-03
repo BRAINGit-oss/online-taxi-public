@@ -8,12 +8,15 @@ import com.brain.servicepassengeruser.internalcommon.constant.OrderContrants;
 import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.OrderRequest;
+import com.brain.servicepassengeruser.internalcommon.util.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -31,6 +34,8 @@ public class OrderInfoService {
     MapServicePriceClient mapServicePriceClient;
     @Autowired
     OrderInfoMapper orderInfoMapperl;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
     public ResponseResult add(OrderRequest orderRequest){
 
         //判断是否为最新的fare_version
@@ -39,25 +44,46 @@ public class OrderInfoService {
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
         }
 
+        //判断是否为黑名单，注意redis的原子操作
+        String keyByDevice = RedisPrefixUtils.generatorKeyByDevice(orderRequest.getDeviceCode());
+        if (isBlock(keyByDevice))
+            return ResponseResult.fail(CommonStatusEnum.DEVICE_REQUEST_ERROR.getCode(), CommonStatusEnum.DEVICE_REQUEST_ERROR.getValue());
+
         //判断有正在进行的订单不允许下单
         if(isOrderGoingOn(orderRequest.getPassengerId())>0){
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
         }
 
         //创建订单
-        log.info(orderRequest.getAddress());
-        OrderInfo orderInfo = new OrderInfo();
-        //一次性复制请求信息
-        BeanUtils.copyProperties(orderRequest,orderInfo);
-        orderInfo.setOrderStatus(OrderContrants.ORDER_START);
-        LocalDateTime now = LocalDateTime.now();
-        orderInfo.setGmtCreate(now);
-        orderInfo.setGmtModified(now);
-
-        orderInfoMapperl.insert(orderInfo);
+//        log.info(orderRequest.getAddress());
+//        OrderInfo orderInfo = new OrderInfo();
+//        //一次性复制请求信息
+//        BeanUtils.copyProperties(orderRequest,orderInfo);
+//        orderInfo.setOrderStatus(OrderContrants.ORDER_START);
+//        LocalDateTime now = LocalDateTime.now();
+//        orderInfo.setGmtCreate(now);
+//        orderInfo.setGmtModified(now);
+//
+//        orderInfoMapperl.insert(orderInfo);
 
 
         return ResponseResult.success("");
+    }
+
+    private boolean isBlock(String keyByDevice) {
+        Boolean aBoolean = stringRedisTemplate.hasKey(keyByDevice);
+        if(aBoolean){
+            String s = stringRedisTemplate.opsForValue().get(keyByDevice);
+            Integer value = Integer.parseInt(s);
+            if(value >=2){
+                return true;
+            }else{
+                stringRedisTemplate.opsForValue().increment(keyByDevice);
+            }
+        }else{
+            stringRedisTemplate.opsForValue().setIfAbsent(keyByDevice,"1",1L, TimeUnit.HOURS);
+        }
+        return false;
     }
 
     public int isOrderGoingOn(Long passengerId){

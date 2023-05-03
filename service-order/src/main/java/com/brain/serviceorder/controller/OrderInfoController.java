@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  *  前端控制器
@@ -27,7 +29,10 @@ public class OrderInfoController {
     @Autowired
     OrderInfoService OrderInfoService;
     @PostMapping("/add")
-    public ResponseResult add(@RequestBody OrderRequest orderRequest){
+    public ResponseResult add(@RequestBody OrderRequest orderRequest, HttpServletRequest httpServletRequest){
+
+//        String deviceCode = httpServletRequest.getHeader("deviceCode");
+//        orderRequest.setDeviceCode(deviceCode);
 
         return OrderInfoService.add(orderRequest);
     }

@@ -63,6 +63,8 @@ public enum CommonStatusEnum {
      */
     ORDER_GOING_ON(1600,"有订单正在进行"),
 
+    DEVICE_REQUEST_ERROR(1601,"设备异常,无法创建订单"),
+
 
     /**
      * 成功
