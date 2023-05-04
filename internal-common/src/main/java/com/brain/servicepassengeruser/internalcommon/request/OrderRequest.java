@@ -22,7 +22,7 @@ public class OrderRequest {
     private LocalDateTime orderTime;
     //预计出发地点详细地址
     private String departure;
-    //预计触发地点纬度
+    //预计出发地点纬度
     private String depLatitude;
     //预计出发地点经度
     private String depLongitude;

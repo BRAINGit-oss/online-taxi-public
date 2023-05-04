@@ -58,6 +58,10 @@ public enum CommonStatusEnum {
 
     WORK_STATUS_NOT_EXISTS(1506,"司机工作状态异常"),
 
+    CITY_DRIVER_EMPTY(1507,"该城市无可用司机"),
+
+    DRIVER_WORK_EMPTY(1508,"可用的司机为空"),
+
     /**
      * 订单提示信息:1600-1699
      */

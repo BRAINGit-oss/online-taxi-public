@@ -4,7 +4,9 @@ import com.brain.servicedriveruser.service.DriverUserService;
 import com.brain.servicepassengeruser.internalcommon.constant.DriverCarConstants;
 import com.brain.servicepassengeruser.internalcommon.dto.DriverUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.OrderRequest;
 import com.brain.servicepassengeruser.internalcommon.response.CheckPhoneResponse;
+import com.brain.servicepassengeruser.internalcommon.response.DriverWorkStatusResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +45,11 @@ public class DriverUserController {
         }
 
         return ResponseResult.success(checkPhoneResponse);
+    }
+
+    @GetMapping("/get-available-driver/{carId}")
+    public ResponseResult<DriverWorkStatusResponse> getAvailableDriverByCarId(@PathVariable Long carId){
+
+        return driverUserService.getAvailableDriverByCarId(carId);
     }
 }

@@ -162,7 +162,8 @@ public class MapTerminalClinet {
         for(int i=0;i<results.size();i++){
             TerminalResponse terminalResponse = new TerminalResponse();
             JSONObject jsonObject = results.getJSONObject(i);
-            Long desc = jsonObject.getLong("desc");
+            String desc1 = jsonObject.getString("desc");
+            long desc = Long.parseLong(desc1);
             String tid = jsonObject.getString(AmapConfigurationConstants.TID);
 
             terminalResponse.setTid(tid);
