@@ -6,6 +6,7 @@ import com.brain.serviceorder.remote.MapServicePriceClient;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.constant.OrderContrants;
 import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
+import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.OrderRequest;
 import com.brain.servicepassengeruser.internalcommon.util.RedisPrefixUtils;
@@ -39,20 +40,26 @@ public class OrderInfoService {
     public ResponseResult add(OrderRequest orderRequest){
 
         //判断是否为最新的fare_version
-        ResponseResult<Boolean> latast = mapServicePriceClient.isLatast(orderRequest.getFareType(), orderRequest.getFareVersion());
-        if(!(latast.getData())){
-            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
-        }
+//        ResponseResult<Boolean> latast = mapServicePriceClient.isLatast(orderRequest.getFareType(), orderRequest.getFareVersion());
+//        if(!(latast.getData())){
+//            return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
+//        }
 
         //判断是否为黑名单，注意redis的原子操作
-        String keyByDevice = RedisPrefixUtils.generatorKeyByDevice(orderRequest.getDeviceCode());
-        if (isBlock(keyByDevice))
-            return ResponseResult.fail(CommonStatusEnum.DEVICE_REQUEST_ERROR.getCode(), CommonStatusEnum.DEVICE_REQUEST_ERROR.getValue());
+//        if (isBlockDevice(orderRequest)) {
+//            return ResponseResult.fail(CommonStatusEnum.DEVICE_REQUEST_ERROR.getCode(), CommonStatusEnum.DEVICE_REQUEST_ERROR.getValue());
+//        }
+
+        // service-order调用service-price实现城市和计价规则查询
+        if(!(isPriceRuleExists(orderRequest))){
+            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_EXITS.getCode(),CommonStatusEnum.CITY_SERVICE_NOT_EXITS.getValue());
+        }
 
         //判断有正在进行的订单不允许下单
-        if(isOrderGoingOn(orderRequest.getPassengerId())>0){
-            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
-        }
+//        if(isOrderGoingOn(orderRequest.getPassengerId())>0){
+//            return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
+//        }
+
 
         //创建订单
 //        log.info(orderRequest.getAddress());
@@ -70,7 +77,8 @@ public class OrderInfoService {
         return ResponseResult.success("");
     }
 
-    private boolean isBlock(String keyByDevice) {
+    private boolean isBlockDevice(OrderRequest orderRequest) {
+        String keyByDevice = RedisPrefixUtils.generatorKeyByDevice(orderRequest.getDeviceCode());
         Boolean aBoolean = stringRedisTemplate.hasKey(keyByDevice);
         if(aBoolean){
             String s = stringRedisTemplate.opsForValue().get(keyByDevice);
@@ -101,6 +109,20 @@ public class OrderInfoService {
         Integer orderGoingOnNumber = orderInfoMapperl.selectCount(objectQueryWrapper);
 
         return orderGoingOnNumber;
+    }
+
+    public boolean isPriceRuleExists(OrderRequest orderRequest){
+        String fareType = orderRequest.getFareType();
+        int index = fareType.indexOf("$");
+        String cityCode = fareType.substring(0, index);
+        String fareVersion1 = fareType.substring(index + 1);
+
+        PriceRule priceRule1 = new PriceRule();
+        priceRule1.setCityCode(cityCode);
+        priceRule1.setVehicleType(fareVersion1);
+        ResponseResult<Boolean> result = mapServicePriceClient.ifExits(priceRule1);
+
+        return result.getData();
     }
 
 }

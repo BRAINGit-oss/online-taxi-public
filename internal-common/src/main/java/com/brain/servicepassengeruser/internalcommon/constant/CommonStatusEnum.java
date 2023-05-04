@@ -65,6 +65,8 @@ public enum CommonStatusEnum {
 
     DEVICE_REQUEST_ERROR(1601,"设备异常,无法创建订单"),
 
+    CITY_SERVICE_NOT_EXITS(1602,"当前城市未开通计价服务，无法创建订单"),
+
 
     /**
      * 成功

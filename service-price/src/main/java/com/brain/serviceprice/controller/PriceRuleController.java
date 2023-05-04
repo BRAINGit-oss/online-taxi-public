@@ -50,7 +50,7 @@ public class PriceRuleController {
         return priceRuleService.isLatest(fareType,fareVersion);
     }
 
-    @GetMapping("/if_exits")
+    @PostMapping("/if_exits")
     public ResponseResult<Boolean> ifExits(@RequestBody PriceRule priceRule){
         return priceRuleService.isExits(priceRule);
     }
