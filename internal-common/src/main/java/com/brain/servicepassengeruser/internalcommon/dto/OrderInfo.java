@@ -97,7 +97,7 @@ public class OrderInfo implements Serializable {
     /**
      * 坐标加密标识 1:GCJ-2 测绘局标准 2：WGS84 GPS标准 3：BD-09 百度标准 4：CGCS2000 北斗标准 0：其他
      */
-    private Integer encrype;
+    private Integer encrypt;
 
     /**
      * 运价类型编码
@@ -132,7 +132,7 @@ public class OrderInfo implements Serializable {
     /**
      * 车辆编号
      */
-    private Integer vehicleNo;
+    private String vehicleNo;
 
     /**
      * 接单时间

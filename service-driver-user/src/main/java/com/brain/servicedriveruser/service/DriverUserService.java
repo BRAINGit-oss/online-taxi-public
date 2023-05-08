@@ -1,15 +1,13 @@
 package com.brain.servicedriveruser.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.brain.servicedriveruser.mapper.CarMapper;
 import com.brain.servicedriveruser.mapper.DriverCarBindingRelationshipMapper;
 import com.brain.servicedriveruser.mapper.DriverUserMapper;
 import com.brain.servicedriveruser.mapper.DriverUserWorkStatusMapper;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.constant.DriverCarConstants;
-import com.brain.servicepassengeruser.internalcommon.dto.DriverCarBindingRelationship;
-import com.brain.servicepassengeruser.internalcommon.dto.DriverUser;
-import com.brain.servicepassengeruser.internalcommon.dto.DriverUserWorkStatus;
-import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.dto.*;
 import com.brain.servicepassengeruser.internalcommon.response.CheckPhoneResponse;
 import com.brain.servicepassengeruser.internalcommon.response.DriverWorkStatusResponse;
 import com.mysql.cj.util.StringUtils;
@@ -35,6 +33,9 @@ public class DriverUserService {
 
     @Autowired
     DriverCarBindingRelationshipMapper driverCarBindingRelationshipMapper;
+
+    @Autowired
+    CarMapper carMapper;
 
     public ResponseResult testUser(){
 
@@ -69,7 +70,7 @@ public class DriverUserService {
         return ResponseResult.success("");
     }
 
-    public ResponseResult getDriverUserByPhone(String driverPhone){
+    public ResponseResult<DriverUser> getDriverUserByPhone(String driverPhone){
 
         Map<String,Object> map = new HashMap<>();
         map.put("driver_phone",driverPhone);
@@ -95,6 +96,9 @@ public class DriverUserService {
         objectQueryWrapper.eq("car_id",carId);
         objectQueryWrapper.eq("state",DriverCarConstants.DRIVER_CAR_BIND);
         DriverCarBindingRelationship driverCarBindingRelationship = driverCarBindingRelationshipMapper.selectOne(objectQueryWrapper);
+        if(null == driverCarBindingRelationship){
+            return ResponseResult.fail(CommonStatusEnum.CAR_WORK_EMPTY.getCode(),CommonStatusEnum.CAR_WORK_EMPTY.getValue());
+        }
         Long driverId = driverCarBindingRelationship.getDriverId();
 
         //根据driverId+出车状态查询 判断是否有可用车辆 司机车辆工作状态表
@@ -102,18 +106,26 @@ public class DriverUserService {
         objectQueryWrapper1.eq("driver_id",driverId);
         objectQueryWrapper1.eq("work_status",DriverCarConstants.DRIVER_WORK_START);
         DriverUserWorkStatus driverUserWorkStatus = driverUserWorkStatusMapper.selectOne(objectQueryWrapper1);
+        DriverWorkStatusResponse driverWorkStatusResponse = new DriverWorkStatusResponse();
         if(null == driverUserWorkStatus){
             return ResponseResult.fail(CommonStatusEnum.DRIVER_WORK_EMPTY.getCode(),CommonStatusEnum.DRIVER_WORK_EMPTY.getValue());
         }else{
             //根据driverId得到driverPhone 司机信息表
-            QueryWrapper<DriverUser> objectQueryWrapper2 = new QueryWrapper<>();
-            objectQueryWrapper2.eq("id",driverId);
-            DriverUser driverUser = driverUserMapper.selectOne(objectQueryWrapper2);
+            QueryWrapper<DriverUser> driveridQueryResult = new QueryWrapper<>();
+            driveridQueryResult.eq("id",driverId);
+            DriverUser driverUser = driverUserMapper.selectOne(driveridQueryResult);
 
-            DriverWorkStatusResponse driverWorkStatusResponse = new DriverWorkStatusResponse();
+            QueryWrapper<Car> carQueryResult = new QueryWrapper<>();
+            carQueryResult.eq("id",carId);
+            Car car = carMapper.selectOne(carQueryResult);
+
+
             driverWorkStatusResponse.setCarId(carId);
             driverWorkStatusResponse.setDriverId(driverId);
             driverWorkStatusResponse.setDriverPhone(driverUser.getDriverPhone());
+            driverWorkStatusResponse.setLicenseId(driverUser.getLicenseId());
+            driverWorkStatusResponse.setVehicleNo(car.getVehicleNo());
+
 
             return ResponseResult.success(driverWorkStatusResponse);
         }

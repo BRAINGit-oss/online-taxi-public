@@ -39,4 +39,8 @@ public class RedisPrefixUtils {
     public static String generatorKeyByDevice(String deviceCode){
         return devicePrefix+ deviceCode;
     }
+
+    public static String generatorKeyByIdAndIdentity(Long userId,String identity){
+        return userId+"-"+identity+"-";
+    }
 }

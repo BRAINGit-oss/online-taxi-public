@@ -9,4 +9,7 @@ public class DriverWorkStatusResponse {
     private String driverPhone;
 
     private Long driverId;
+
+    private String LicenseId;
+    private String VehicleNo;
 }

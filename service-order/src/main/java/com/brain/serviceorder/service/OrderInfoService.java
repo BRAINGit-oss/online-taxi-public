@@ -3,7 +3,7 @@ package com.brain.serviceorder.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.brain.serviceorder.mapper.OrderInfoMapper;
 import com.brain.serviceorder.remote.MapServicePriceClient;
-import com.brain.serviceorder.remote.ServiceCityDriverUserClient;
+import com.brain.serviceorder.remote.ServiceDriverUserClient;
 import com.brain.serviceorder.remote.ServiceMapClient;
 import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.constant.OrderContrants;
@@ -11,15 +11,21 @@ import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
 import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
 import com.brain.servicepassengeruser.internalcommon.request.OrderRequest;
+import com.brain.servicepassengeruser.internalcommon.request.PriceRuleIsNewRequest;
+import com.brain.servicepassengeruser.internalcommon.response.DriverWorkStatusResponse;
 import com.brain.servicepassengeruser.internalcommon.response.TerminalResponse;
 import com.brain.servicepassengeruser.internalcommon.util.RedisPrefixUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,32 +43,38 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class OrderInfoService {
 
+
     @Autowired
     MapServicePriceClient mapServicePriceClient;
     @Autowired
-    ServiceCityDriverUserClient serviceCityDriverUserClient;
+    ServiceDriverUserClient serviceDriverUserClient;
     @Autowired
     ServiceMapClient serviceMapClient;
     @Autowired
     OrderInfoMapper orderInfoMapperl;
+    @Autowired
+    RedissonClient redissonClient;
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
     public ResponseResult add(OrderRequest orderRequest){
 
         //判断有正在进行的订单不允许下单
-        if(isOrderGoingOn(orderRequest.getPassengerId())>0){
+        if(isPassengerOrderGoingOn(orderRequest.getPassengerId())>0){
             return ResponseResult.fail(CommonStatusEnum.ORDER_GOING_ON.getCode(),CommonStatusEnum.ORDER_GOING_ON.getValue());
         }
 
         //根据城市ID查询该城市是否有可用司机
-        ResponseResult<Boolean> availableDriver = serviceCityDriverUserClient.isAvailableDriver(orderRequest.getAddress());
+        ResponseResult<Boolean> availableDriver = serviceDriverUserClient.isAvailableDriver(orderRequest.getAddress());
         if(!availableDriver.getData()){
             return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
         }
 
-        //判断是否为最新的fare_version
-        ResponseResult<Boolean> latast = mapServicePriceClient.isLatast(orderRequest.getFareType(), orderRequest.getFareVersion());
+        //判断是否为最新的fare_version（计价规则）
+        PriceRuleIsNewRequest priceRuleIsNewRequest = new PriceRuleIsNewRequest();
+        priceRuleIsNewRequest.setFareType(orderRequest.getFareType());
+        priceRuleIsNewRequest.setFareVersion(orderRequest.getFareVersion());
+        ResponseResult<Boolean> latast = mapServicePriceClient.isLatast(priceRuleIsNewRequest);
         if(!(latast.getData())){
             return ResponseResult.fail(CommonStatusEnum.PRICE_RULE_CHANGED.getCode(),CommonStatusEnum.PRICE_RULE_CHANGED.getValue());
         }
@@ -77,28 +89,31 @@ public class OrderInfoService {
             return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_EXITS.getCode(),CommonStatusEnum.CITY_SERVICE_NOT_EXITS.getValue());
         }
 
+
         //创建订单
         log.info(orderRequest.getAddress());
         OrderInfo orderInfo = new OrderInfo();
         //一次性复制请求信息
         BeanUtils.copyProperties(orderRequest,orderInfo);
-        orderInfo.setOrderStatus(OrderContrants.ORDER_START);
+
         LocalDateTime now = LocalDateTime.now();
+
+        orderInfo.setOrderStatus(OrderContrants.ORDER_START);
         orderInfo.setGmtCreate(now);
         orderInfo.setGmtModified(now);
 
         orderInfoMapperl.insert(orderInfo);
 
-
         //派单业务 调用终端搜索服务
-        aroundSearch(orderRequest);
+        aroundSearch(orderInfo);
 
         return ResponseResult.success("");
     }
 
-    private void aroundSearch(OrderRequest orderRequest) {
-        String depLongitude = orderRequest.getDepLongitude(); //经度
-        String depLatitude = orderRequest.getDepLatitude();  //纬度
+//    synchronized是重量级的互斥锁 通过字符串定位到局部代码更合适
+    public void aroundSearch(OrderInfo orderInfo) {
+        String depLongitude = orderInfo.getDepLongitude(); //经度
+        String depLatitude = orderInfo.getDepLatitude();  //纬度
         String center = depLatitude+","+depLongitude;
 
         List<Integer> rediusList = new ArrayList<>();
@@ -106,21 +121,78 @@ public class OrderInfoService {
         rediusList.add(4000);
         rediusList.add(5000);
         ResponseResult<List<TerminalResponse>> listResponseResult =null;
+
+        //解析终端
+        //goto语句是为了测试
+        redius:
         for(int i=0;i<rediusList.size();i++){
+
             Integer redius = rediusList.get(i);
             listResponseResult = serviceMapClient.aroundSearch(center, redius);
             log.info("查询半径为"+redius+"范围内的车辆"+ JSONArray.fromObject(listResponseResult.getData()).toString());
-            //获得终端 [{"carId":234152342,"tid":"679730762"},{"carId":1652578903615488002,"tid":"682441028"}]
-            TerminalResponse terminalResponse = listResponseResult.getData().get(i);
+            //获得终端 [{"carId":234152342,"tid":"679730762",经度,纬度},{"carId":1652578903615488002,"tid":"682441028"}]
+
+
             //解析终端
-            Long carId = terminalResponse.getCarId();
-            //根据解析出的车辆，查询车辆信息(1、出车状态的司机service-driver-user做 2、司机没有正在进行的订单service-order)
+            List<TerminalResponse> result = listResponseResult.getData();
 
+            for(int j=0;j< result.size();j++){
+                TerminalResponse terminalResponse = result.get(j);
+                Long carId = terminalResponse.getCarId();
+                //车辆经纬度从地图中获取
+                String latitude = terminalResponse.getLatitude();
+                String longitude = terminalResponse.getLongitude();
 
+                //查询是否有对应的可派单司机 DRIVER_WORK_EMPTY CAR_WORK_EMPTY
+                ResponseResult<DriverWorkStatusResponse> availableDriverByCarId = serviceDriverUserClient.getAvailableDriverByCarId(carId);
+//                availableDriverByCarId.getCode()==CommonStatusEnum.CAR_WORK_EMPTY.getCode()
+                if(availableDriverByCarId.getCode()==CommonStatusEnum.DRIVER_WORK_EMPTY.getCode()){
+                    log.info("没有车辆ID："+carId+",对应的司机");
+                    continue;
+                }else{
+                    log.info("车辆ID："+carId+"找到了正在出车的司机");
+                    DriverWorkStatusResponse data = availableDriverByCarId.getData();
+                    Long driverId = data.getDriverId();
+                    String driverPhone = data.getDriverPhone();
+                    String licenseId = data.getLicenseId();
+                    String vehicleNo = data.getVehicleNo();
 
-            //找到符合的车辆，进行派单
+                    String locKey = (driverId + "").intern();
+                    RLock lock = redissonClient.getLock(locKey);
+                    lock.lock();
+                    log.info("locKey is: "+locKey);
 
-            //如果派单成功，则退出循环
+                    //定位到核心代码 连接池中取字符串
+                    //判断有正在进行的订单不允许下单
+                    if(isDriverOrderGoingOn(driverId)>0){
+                        lock.unlock();
+                        continue ;
+                    }
+                    //完善订单信息
+                    QueryWrapper<OrderInfo> objectQueryWrapper = new QueryWrapper<>();
+                    objectQueryWrapper.eq("id",carId);
+
+                    orderInfo.setDriverId(driverId);
+                    orderInfo.setDriverPhone(driverPhone);
+                    orderInfo.setCarId(carId);
+
+                    orderInfo.setReceiveOrderTime(LocalDate.now());
+                    orderInfo.setReceiveOrderCarLongitude(longitude);
+                    orderInfo.setReceiveOrderCarLatitude(latitude);
+
+                    //司机信息，车辆信息中获取
+                    orderInfo.setLicenseId(licenseId);
+                    orderInfo.setVehicleNo(vehicleNo);
+                    orderInfo.setOrderStatus(OrderContrants.RECEIVE_ORDER);
+
+                    orderInfoMapperl.updateById(orderInfo);
+
+                    lock.unlock();
+                    //如果派单成功，则退出循环
+                    break redius;
+                }
+
+            }
 
         }
     }
@@ -142,7 +214,7 @@ public class OrderInfoService {
         return false;
     }
 
-    public int isOrderGoingOn(Long passengerId){
+    public int isPassengerOrderGoingOn(Long passengerId){
 
         QueryWrapper<OrderInfo> objectQueryWrapper = new QueryWrapper<>();
         objectQueryWrapper.eq("passenger_id",passengerId);
@@ -155,6 +227,21 @@ public class OrderInfoService {
                 .or().eq("order_status",OrderContrants.TO_START_PAY)
         );
         Integer orderGoingOnNumber = orderInfoMapperl.selectCount(objectQueryWrapper);
+
+        return orderGoingOnNumber;
+    }
+
+    public int isDriverOrderGoingOn(Long driverId){
+
+        QueryWrapper<OrderInfo> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.eq("driver_id",driverId);
+        objectQueryWrapper.and(objectQueryWrapper1 -> objectQueryWrapper1.eq("order_status",OrderContrants.RECEIVE_ORDER)
+                .or().eq("order_status",OrderContrants.DRIVER_TO_PICK_UP_PASSENGER)
+                .or().eq("order_status",OrderContrants.DRIVER_ADDRIVED_DEPATURE)
+                .or().eq("order_status",OrderContrants.PICK_UP_PASSENGER)
+        );
+        Integer orderGoingOnNumber = orderInfoMapperl.selectCount(objectQueryWrapper);
+        log.info("司机"+driverId+"正在进行的订单数量为："+orderGoingOnNumber);
 
         return orderGoingOnNumber;
     }
@@ -172,5 +259,4 @@ public class OrderInfoService {
 
         return result.getData();
     }
-
 }

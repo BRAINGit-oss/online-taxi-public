@@ -4,6 +4,7 @@ package com.brain.serviceprice.controller;
 import com.brain.servicepassengeruser.internalcommon.dto.OrderInfo;
 import com.brain.servicepassengeruser.internalcommon.dto.PriceRule;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
+import com.brain.servicepassengeruser.internalcommon.request.PriceRuleIsNewRequest;
 import com.brain.serviceprice.service.PriceRuleService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,10 @@ public class PriceRuleController {
         return priceRuleService.getLatestVersion(fareType);
     }
 
-    @GetMapping("/is_latest")
-    public ResponseResult<Boolean> isLatast(@RequestParam String fareType,@RequestParam Integer fareVersion){
+    @PostMapping("/is_latest")
+    public ResponseResult<Boolean> isLatast(@RequestBody PriceRuleIsNewRequest priceRuleIsNewRequest){
+        String fareType = priceRuleIsNewRequest.getFareType();
+        Integer fareVersion = priceRuleIsNewRequest.getFareVersion();
 
         return priceRuleService.isLatest(fareType,fareVersion);
     }

@@ -62,6 +62,8 @@ public enum CommonStatusEnum {
 
     DRIVER_WORK_EMPTY(1508,"可用的司机为空"),
 
+    CAR_WORK_EMPTY(1509,"可用的车辆为空"),
+
     /**
      * 订单提示信息:1600-1699
      */

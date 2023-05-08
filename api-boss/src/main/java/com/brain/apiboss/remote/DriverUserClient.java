@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("service-driver-user")
 public interface DriverUserClient {
 
-    @RequestMapping(method = RequestMethod.POST,value="/users")
+    @RequestMapping(method = RequestMethod.POST,value="/add")
     ResponseResult addUser(@RequestBody DriverUser driverUser);
 
-    @RequestMapping(method = RequestMethod.PUT,value="/user")
+    @RequestMapping(method = RequestMethod.PUT,value="/update")
     ResponseResult updateUser(@RequestBody DriverUser driverUser);
 
     @RequestMapping(method = RequestMethod.POST,value="/driver_car_binding_relationship/bind")

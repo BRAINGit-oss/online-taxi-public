@@ -1,6 +1,7 @@
 package com.brain.servicedriveruser.controller;
 
 import com.brain.servicedriveruser.service.DriverUserService;
+import com.brain.servicepassengeruser.internalcommon.constant.CommonStatusEnum;
 import com.brain.servicepassengeruser.internalcommon.constant.DriverCarConstants;
 import com.brain.servicepassengeruser.internalcommon.dto.DriverUser;
 import com.brain.servicepassengeruser.internalcommon.dto.ResponseResult;
@@ -19,29 +20,30 @@ public class DriverUserController {
     @Autowired
     DriverUserService driverUserService;
 
-    @PostMapping("/user")
+    @PostMapping("/add")
     public ResponseResult addDriverUser(@RequestBody DriverUser driverUser){
         return driverUserService.addUser(driverUser);
     }
 
-    @PutMapping("/user")
+    @PutMapping("/update")
     public ResponseResult updateDriverUser(@RequestBody DriverUser driverUser){
         return driverUserService.updateUser(driverUser);
     }
 
     @GetMapping("/check-driver-phone/{driverPhone}")
-    public ResponseResult checkPhone(@PathVariable("driverPhone") String driverPhone){
+    public ResponseResult<CheckPhoneResponse> checkPhone(@PathVariable("driverPhone") String driverPhone){
 
         CheckPhoneResponse checkPhoneResponse = new CheckPhoneResponse();
 
         ResponseResult<DriverUser> driverUserByPhone = driverUserService.getDriverUserByPhone(driverPhone);
-        DriverUser data = driverUserByPhone.getData();
-        if(data == null){
+        int ifExists = DriverCarConstants.DRIVER_STATUS_YES;
+        if(driverUserByPhone.getCode()== CommonStatusEnum.DRIVER_STATUS_UNVALID.getCode()){
+            ifExists = DriverCarConstants.DRIVER_STATUS_NO;
             checkPhoneResponse.setDriverPhone(driverPhone);
-            checkPhoneResponse.setIfEmpty(DriverCarConstants.DRIVER_STATUS_NO);
+            checkPhoneResponse.setIfEmpty(ifExists);
         }else{
-            checkPhoneResponse.setDriverPhone(data.getDriverPhone());
-            checkPhoneResponse.setIfEmpty(DriverCarConstants.DRIVER_STATUS_YES);
+            checkPhoneResponse.setDriverPhone(driverUserByPhone.getData().getDriverPhone());
+            checkPhoneResponse.setIfEmpty(ifExists);
         }
 
         return ResponseResult.success(checkPhoneResponse);

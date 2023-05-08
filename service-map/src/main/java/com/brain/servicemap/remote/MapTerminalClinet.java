@@ -165,9 +165,14 @@ public class MapTerminalClinet {
             String desc1 = jsonObject.getString("desc");
             long desc = Long.parseLong(desc1);
             String tid = jsonObject.getString(AmapConfigurationConstants.TID);
+            JSONObject location = jsonObject.getJSONObject("location");
+            String longitude = location.getString("longitude");
+            String latitude = location.getString("latitude");
 
             terminalResponse.setTid(tid);
             terminalResponse.setCarId(desc);
+            terminalResponse.setLongitude(longitude);
+            terminalResponse.setLatitude(latitude);
 
             list.add(terminalResponse);
         }
